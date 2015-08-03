@@ -1,6 +1,5 @@
 package hatena.intern
 
-import java.io.File
 import java.nio.file.{ Paths, Files }
 
 import scala.io.Source
@@ -54,9 +53,9 @@ object LtsvParser {
   }
   private def splitOnce(str: String, delimiter: String): Array[String] = {
     val splited = str.split(delimiter)
-    if (splited.size <= 1) {
-      throw new InvalidLtsvException("delimiter of label and value is not found")
+    splited.size match {
+      case x if x <= 1 => throw new InvalidLtsvException("delimiter of label and value is not found")
+      case _ => Array(splited.head, splited.tail.mkString(""))
     }
-    Array(splited.head, splited.tail.mkString(""))
   }
 }

@@ -9,12 +9,12 @@ class Exercise1Spec extends UnitSpec {
 
       val log = Log(
         host = "127.0.0.1",
-        user = "frank",
+        user = Some("frank"),
         epoch = 1372694390,
         req = "GET /apache_pb.gif HTTP/1.0",
         status = 200,
         size = 2326,
-        referer = "http://www.hatena.ne.jp/"
+        referer = Some("http://www.hatena.ne.jp/")
       )
 
       log.method shouldBe "GET"

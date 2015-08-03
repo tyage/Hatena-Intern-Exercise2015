@@ -4,7 +4,7 @@ import java.util.Date
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 
-case class Log(host: String, user: String, epoch: Int, req: String, status: Int, size: Int, referer: String) {
+case class Log(host: String, user: Option[String], epoch: Int, req: String, status: Int, size: Int, referer: Option[String]) {
   private val Array(reqMethod, reqPath, reqProtocol) = this.req.split(" ")
 
   def method: String = reqMethod

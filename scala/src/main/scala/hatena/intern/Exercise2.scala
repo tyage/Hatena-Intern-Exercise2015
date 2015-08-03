@@ -5,7 +5,9 @@ import java.nio.file.{ Paths, Files }
 
 import scala.io.Source
 
-class LtsvFileNotFoundExcepion(filepath: String) extends RuntimeException(filepath)
+class LtsvFileNotFoundExcepion(message: String = null) extends RuntimeException(message)
+
+class InvalidLtsvException(message: String = null) extends RuntimeException(message)
 
 object LtsvParser {
   def parse(filePath: String): Iterable[Log] = {
@@ -13,7 +15,7 @@ object LtsvParser {
       val source = Source.fromFile(filePath)
       source.getLines().map(parseLine).toList
     } else {
-      throw new LtsvFileNotFoundExcepion(filePath)
+      throw new LtsvFileNotFoundExcepion(s"${filePath} is not found")
     }
   }
   def parseLine(ltsv: String): Log = {
@@ -52,6 +54,9 @@ object LtsvParser {
   }
   private def splitOnce(str: String, delimiter: String): Array[String] = {
     val splited = str.split(delimiter)
+    if (splited.size <= 1) {
+      throw new InvalidLtsvException("delimiter of label and value is not found")
+    }
     Array(splited.head, splited.tail.mkString(""))
   }
 }

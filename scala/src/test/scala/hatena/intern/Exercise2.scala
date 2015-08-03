@@ -17,6 +17,9 @@ class Exercise2Spec extends UnitSpec {
 
     it("LTSVファイルが正しくパースできない形式の場合") {
       // エラーハンドリングの設計を考えながら、テストを書いてみてください
+      intercept[InvalidLtsvException] {
+        LtsvParser.parse("../sample_data/invalid_log.ltsv")
+      }
     }
 
     it("LTSVファイルが存在しない場合") {

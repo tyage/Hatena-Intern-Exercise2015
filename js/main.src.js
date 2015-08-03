@@ -12,29 +12,49 @@ let parseLTSVLog = (logStr) => logStr.split('\n')
   });
 
 // 課題 JS-2: 関数 `createLogTable` を記述してください
-let headColumns = ['path', 'epoch'];
+let removeChilds = (elem) => _.toArray(elem.children).forEach((child) => child.remove());
 class LogTableElement extends HTMLTableElement {
   createdCallback() {
     this.headElem = this.createTableHead();
     this.bodyElem = this.createTableBody();
     this.appendChild(this.headElem);
     this.appendChild(this.bodyElem);
+
+    this.LSTVLog = [];
+    this.headColumns = [];
   }
   createTableHead() {
-    let headElem = document.createElement('thead');
+    return document.createElement('thead');
+  }
+  createTableBody() {
+    return document.createElement('tbody');
+  }
+
+  setLog(LSTVLog) {
+    this.LSTVLog = LSTVLog;
+    this.headColumns = (LSTVLog.length === 0 ? [] : _.keys(LSTVLog[0]))
+    this.updateTableElem(LSTVLog, this.headColumns);
+  }
+  filterLog(filter) {
+    this.updateTableElem(this.LSTVLog.filter(filter), this.headColumns);
+  }
+
+  updateTableElem(LSTVLog, headColumns) {
+    removeChilds(this.headElem);
+    removeChilds(this.bodyElem);
+    this.appendTableHeadRows(LSTVLog, headColumns);
+    this.appendTableBodyRows(LSTVLog, headColumns);
+  }
+  appendTableHeadRows(LSTVLog, headColumns) {
     let headRowElem = document.createElement('tr');
-    headElem.appendChild(headRowElem);
     headColumns.forEach((column) => {
       let headColumnElem = document.createElement('th');
       headColumnElem.textContent = column;
       headRowElem.appendChild(headColumnElem);
     });
-    return headElem;
+    this.headElem.appendChild(headRowElem);
   }
-  createTableBody() {
-    return document.createElement('tbody');
-  }
-  appendLog(LSTVLog) {
+  appendTableBodyRows(LSTVLog, headColumns) {
     LSTVLog.forEach((log) => {
       let bodyRowElem = document.createElement('tr');
       headColumns.forEach((column) => {
@@ -53,6 +73,7 @@ let LogTable = document.registerElement('log-table', {
 
 let createLogTable = (elem, LSTVLog) => {
   let logTable = new LogTable();
+  removeChilds(elem);
   elem.appendChild(logTable);
-  logTable.appendLog(LSTVLog);
+  logTable.setLog(LSTVLog);
 };

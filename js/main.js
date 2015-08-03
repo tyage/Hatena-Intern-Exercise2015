@@ -32,7 +32,11 @@ var parseLTSVLog = function parseLTSVLog(logStr) {
 };
 
 // 課題 JS-2: 関数 `createLogTable` を記述してください
-var headColumns = ['path', 'epoch'];
+var removeChilds = function removeChilds(elem) {
+  return _.toArray(elem.children).forEach(function (child) {
+    return child.remove();
+  });
+};
 
 var LogTableElement = (function (_HTMLTableElement) {
   _inherits(LogTableElement, _HTMLTableElement);
@@ -50,19 +54,14 @@ var LogTableElement = (function (_HTMLTableElement) {
       this.bodyElem = this.createTableBody();
       this.appendChild(this.headElem);
       this.appendChild(this.bodyElem);
+
+      this.LSTVLog = [];
+      this.headColumns = [];
     }
   }, {
     key: 'createTableHead',
     value: function createTableHead() {
-      var headElem = document.createElement('thead');
-      var headRowElem = document.createElement('tr');
-      headElem.appendChild(headRowElem);
-      headColumns.forEach(function (column) {
-        var headColumnElem = document.createElement('th');
-        headColumnElem.textContent = column;
-        headRowElem.appendChild(headColumnElem);
-      });
-      return headElem;
+      return document.createElement('thead');
     }
   }, {
     key: 'createTableBody',
@@ -70,8 +69,39 @@ var LogTableElement = (function (_HTMLTableElement) {
       return document.createElement('tbody');
     }
   }, {
-    key: 'appendLog',
-    value: function appendLog(LSTVLog) {
+    key: 'setLog',
+    value: function setLog(LSTVLog) {
+      this.LSTVLog = LSTVLog;
+      this.headColumns = LSTVLog.length === 0 ? [] : _.keys(LSTVLog[0]);
+      this.updateTableElem(LSTVLog, this.headColumns);
+    }
+  }, {
+    key: 'filterLog',
+    value: function filterLog(filter) {
+      this.updateTableElem(this.LSTVLog.filter(filter), this.headColumns);
+    }
+  }, {
+    key: 'updateTableElem',
+    value: function updateTableElem(LSTVLog, headColumns) {
+      removeChilds(this.headElem);
+      removeChilds(this.bodyElem);
+      this.appendTableHeadRows(LSTVLog, headColumns);
+      this.appendTableBodyRows(LSTVLog, headColumns);
+    }
+  }, {
+    key: 'appendTableHeadRows',
+    value: function appendTableHeadRows(LSTVLog, headColumns) {
+      var headRowElem = document.createElement('tr');
+      headColumns.forEach(function (column) {
+        var headColumnElem = document.createElement('th');
+        headColumnElem.textContent = column;
+        headRowElem.appendChild(headColumnElem);
+      });
+      this.headElem.appendChild(headRowElem);
+    }
+  }, {
+    key: 'appendTableBodyRows',
+    value: function appendTableBodyRows(LSTVLog, headColumns) {
       var _this = this;
 
       LSTVLog.forEach(function (log) {
@@ -96,7 +126,8 @@ var LogTable = document.registerElement('log-table', {
 
 var createLogTable = function createLogTable(elem, LSTVLog) {
   var logTable = new LogTable();
+  removeChilds(elem);
   elem.appendChild(logTable);
-  logTable.appendLog(LSTVLog);
+  logTable.setLog(LSTVLog);
 };
 

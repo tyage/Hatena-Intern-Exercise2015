@@ -1,0 +1,14 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "babel": "^5.8.20"
+  },
+  "devDependencies": {
+    "babel": "^5.8.20"
+  },
+  "scripts": {},
+  "author": ""
+}

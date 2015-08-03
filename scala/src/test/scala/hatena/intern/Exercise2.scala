@@ -21,6 +21,9 @@ class Exercise2Spec extends UnitSpec {
 
     it("LTSVファイルが存在しない場合") {
       // エラーハンドリングの設計を考えながら、テストを書いてみてください
+      intercept[LtsvFileNotFoundExcepion] {
+        LtsvParser.parse("somefilethatnotexists")
+      }
     }
   }
 

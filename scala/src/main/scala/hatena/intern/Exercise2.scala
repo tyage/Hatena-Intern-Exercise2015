@@ -1,13 +1,20 @@
 package hatena.intern
 
-import scala.collection.immutable.HashMap
+import java.io.File
+import java.nio.file.{ Paths, Files }
+
 import scala.io.Source
-import scalax.file.Path
+
+class LtsvFileNotFoundExcepion(filepath: String) extends RuntimeException(filepath)
 
 object LtsvParser {
   def parse(filePath: String): Iterable[Log] = {
-    val source = Source.fromFile(filePath)
-    source.getLines().map(parseLine).toList
+    if (Files.exists(Paths.get(filePath))) {
+      val source = Source.fromFile(filePath)
+      source.getLines().map(parseLine).toList
+    } else {
+      throw new LtsvFileNotFoundExcepion(filePath)
+    }
   }
   def parseLine(ltsv: String): Log = {
     val ltsvMap = ltsv.split("\t").foldLeft(Map.empty[String, String])((map, lv) => {
